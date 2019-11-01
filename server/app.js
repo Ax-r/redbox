@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const dotenv = require('dotenv');
+dotenv.config();
 
 const io = require('socket.io')();
 const socketAuth = require('socketio-auth');
@@ -20,7 +22,7 @@ var http = require('http').Server(app);
 io.attach(http);
 io.adapter(redisAdapter);
 
-let dev_db_url = 'mongodb+srv://axraf:passwd159753@cluster0-6yu4k.azure.mongodb.net/express?retryWrites=true&w=majority';
+let dev_db_url = 'mongodb+srv://.....';
 let mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
