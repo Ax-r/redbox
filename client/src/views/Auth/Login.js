@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Message, Segment, Divider } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Message, Segment, Divider, Dimmer, Loader } from 'semantic-ui-react'
 import { Link } from "react-router-dom";
 
 import { connect } from 'react-redux'
@@ -16,7 +16,9 @@ class Login extends Component {
             emailHasError: false,
             passwordHasError: false,
             emailErrMsg: '',
-            passwordErrMsg: ''
+            passwordErrMsg: '',
+
+            visibleError: true
         }
     }
 
@@ -26,7 +28,7 @@ class Login extends Component {
     }
 
     hundleSubmit = () => {
-        this.setState({ emailHasError: false, passwordHasError: false })
+        this.setState({ emailHasError: false, passwordHasError: false, visibleError: true })
         const { email, password } = this.state;
         if (!email) {
             this.setState({ emailHasError: true, emailErrMsg: 'Email cannot be Empty !' })
@@ -36,14 +38,16 @@ class Login extends Component {
             this.setState({ passwordHasError: true, passwordErrMsg: 'Password cannot be Empty !' })
             return;
         }
-
-
         this.props.loginUser(email, password)
     }
 
+    handleDismissError = () => {
+        this.setState({ visibleError: false })
+    }
 
     render() {
-        const { email, password, emailHasError, passwordHasError, emailErrMsg, passwordErrMsg } = this.state;
+        const { email, password, emailHasError, passwordHasError, emailErrMsg, passwordErrMsg, visibleError } = this.state;
+        const { loading, errorAuth } = this.props;
 
         return (
             <Grid textAlign='center' style={{ height: '50vh' }} verticalAlign='middle'>
@@ -79,16 +83,19 @@ class Login extends Component {
                                 fluid
                                 size='large'
                                 onClick={this.hundleSubmit}
+                                disabled={loading}
                             >
                                 Login
                                 </Button>
                             <Divider />
-                            <Button circular color='facebook' icon='facebook' />
-                            <Button circular color='twitter' icon='twitter' />
-                            <Button circular color='linkedin' icon='linkedin' />
-                            <Button circular color='google plus' icon='google' />
+                            <Button circular color='facebook' icon='facebook' disabled={loading} />
+                            <Button circular color='twitter' icon='twitter' disabled={loading} />
+                            <Button circular color='linkedin' icon='linkedin' disabled={loading} />
+                            <Button circular color='google plus' icon='google' disabled={loading} />
                         </Segment>
                     </Form>
+
+                    {errorAuth && visibleError && <Message color='red' onDismiss={this.handleDismissError} content={errorAuth} />}
 
                     <Message>
                         New to us? <Link to="/auth/register">Sign Up</Link><br />

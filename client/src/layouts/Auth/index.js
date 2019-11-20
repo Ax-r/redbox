@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Container } from 'semantic-ui-react'
 
-import AuthNavbar from 'components/Navbars/AuthNavbar'
 import routes from "routes.js";
 
 class AuthLayout extends Component {

@@ -2,11 +2,11 @@
 export function AuthReducer(state = {}, action) {
     switch (action.type) {
         case 'LOAD_AUTH':
-            return { ...state, loading: true };
+            return { loading: true };
         case 'ERR_AUTH':
-            return { ...state, loading: false, error: action.error };
+            return { error: action.error, is_authentified: false };
         case 'AUTH_RECEIVED':
-            return { ...state, user: action.json, loading: false }
+            return { user: action.json, is_authentified: action.auth }
         default:
             return state;
     }

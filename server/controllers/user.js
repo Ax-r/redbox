@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 //Simple version, without validation or sanitation
 exports.index = function (req, res) {
@@ -39,7 +41,7 @@ exports.user_create = function (req, res) {
 exports.user_login = function (req, res) {
     let email_ = req.body.email
     let password_ = req.body.password
-
+    
     if (!email_ || !password_) {
         res.status(500).send({ 'error': 'please fill all required fields !' })
         return;
@@ -50,6 +52,13 @@ exports.user_login = function (req, res) {
             res.status(500).send({ 'error': err.errmsg })
             return;
         }
-        res.send(users);
+
+        let currentUser = users[0]
+        let hash_ = crypto.pbkdf2Sync(password_, currentUser.salt, 1000, 64, `sha512`).toString(`hex`);
+        if(hash_ != currentUser.pwd){
+            res.status(500).send({ 'error': 'invalid credentials !' })
+            return;
+        }
+        res.send(currentUser);
     })
 };
